@@ -1,0 +1,109 @@
+<html>
+<head>
+<title></title>
+  <meta charset="UTF-8">
+  <meta name="description" content="encrypt-decrypt-random-string/">
+  <meta name="keywords" content="Encrypt, Decrypt, String, JavaScript">
+  <meta name="author" content="Riski febriansyah">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div>
+<textarea id="text" type="text" name="string" /></textarea>
+<button onclick="myFunction()">Encrypt</button>
+<p>Encrypt Text</p>
+<textarea readonly="true" id="enctext" /></textarea>
+<p>Decrypt Text</p>
+<textarea readonly="true" id="dectext" /></textarea>
+<p>Signature</p>
+<textarea readonly="true" id="signature"></textarea>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+function myFunction(){
+	let text = $("#text").val();
+	const strtextbaseenc = unescape(encodeURIComponent(text));
+	const textbaseenc = btoa(strtextbaseenc);
+	let array = _encdecKey();
+	let encstring = _encSTR(array,textbaseenc);
+	let decstring = _decSTR(array,encstring);
+	const strtextbasedec = atob(decstring);
+	const textbasedec = decodeURIComponent(escape(strtextbasedec));
+	$("#enctext").val(encstring);
+	$("#dectext").val(textbasedec);
+	$("#signature").val(JSON.stringify(array));
+	console.log(encstring);
+}
+  	function _encdecKey()
+	{
+		let RSTR = _encdecRandSTR();
+		let STR = RSTR.split('');
+		let i = 47;
+
+		let objResults = {};
+		while (i--) {
+			let id1 = Math.floor(Math.random()*STR.length);
+			let randomElement1 = STR[id1];
+			let parent = '';
+			if(randomElement1 != undefined){    
+				 parent = STR.splice(id1, 1)[0];
+			}
+			let id2 = Math.floor(Math.random()*STR.length);
+			let randomElement2 = STR[id2];
+			
+			let child = '';
+			if(randomElement2 != undefined){ 
+				child = STR.splice(id2, 1)[0];
+			}
+			if(parent && child){
+			objResults[parent] = child;
+			objResults[child] = parent;
+			}
+		}
+		return objResults;
+	}  
+	function _encSTR(array,str){
+		console.log(str);
+		let len = str.length;	
+		let items = str.split('');
+		let arm = array;
+			
+		let encstr = "";
+		for(let i=0; i < len ; i++){
+			//console.log('xhexk = '+arm['R'])
+			encstr += arm[items[i]];
+		}
+			
+		return encstr;
+  	}
+	function _decSTR(array,str){
+		let decstr = "";
+		if(str){
+			let len = str.length;	
+			let items = str.split('');
+			let arm = array;
+			
+			for(let i=0; i < len ; i++){
+				decstr += arm[items[i]];
+			}
+		}
+		return decstr;
+
+	}
+	function _encdecRandSTR(){
+			let result      = '';
+			let characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-*=$#@^ %._,{}()&!?"<>[]~;:|`';
+			let arrchar 	= characters.split('');
+			let charactersLength = characters.length;
+			for ( let i = 0; i < charactersLength; i++ ) {
+				let id 		= Math.floor(Math.random()*arrchar.length);
+				let char 	= arrchar.splice(id, 1)[0];
+			  		result 	+= char;
+		   }
+		   return result;
+	}
+
+</script>
+</body>
+</html>
